@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harmonia — Jornada do Violonista</title>
+<style>
+:root{
+  --bg:#f7f3ff; --surface:#ffffff; --surface2:#eee7ff; --purple:#6d3bd1;
+  --purple2:#8e5ce6; --purple3:#b89af5; --deep:#3d216f; --text:#271b3a;
+  --muted:#756b88; --green:#35b77a; --gold:#f0b94d; --line:#ded3f5;
+  --shadow:0 16px 45px rgba(88,48,160,.12);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;color:var(--text);
+background:
+radial-gradient(circle at 8% 5%,#e8dcff 0,transparent 28%),
+radial-gradient(circle at 95% 15%,#f0e2ff 0,transparent 25%),var(--bg)}
+button{font:inherit;cursor:pointer}
+.app{max-width:1250px;margin:auto;padding:28px 22px 60px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:22px}
+.logo{display:flex;align-items:center;gap:12px;font-weight:850;font-size:20px;color:var(--deep)}
+.logo-mark{width:44px;height:44px;border-radius:15px;background:linear-gradient(135deg,var(--purple),var(--purple2));
+display:grid;place-items:center;color:white;font-size:22px;box-shadow:0 9px 22px #7650c43b}
+.pill{background:#fff;border:1px solid var(--line);padding:9px 13px;border-radius:999px;font-weight:700;color:var(--deep)}
+.hero{background:linear-gradient(135deg,#6d3bd1,#8d5be5);color:#fff;border-radius:30px;padding:30px;
+box-shadow:0 22px 55px rgba(82,39,157,.24);position:relative;overflow:hidden}
+.hero:after{content:"♪";position:absolute;font-size:190px;right:30px;top:-55px;opacity:.10;transform:rotate(12deg)}
+.hero h1{margin:0 0 7px;font-size:clamp(30px,5vw,52px);letter-spacing:-1.5px}
+.hero p{margin:0;max-width:690px;opacity:.9;font-size:16px;line-height:1.55}
+.hero-grid{display:grid;grid-template-columns:1fr 330px;gap:24px;align-items:end}
+.level-badge{display:inline-flex;align-items:center;gap:8px;background:#ffffff24;border:1px solid #ffffff35;padding:7px 11px;border-radius:999px;margin-bottom:15px;font-weight:800}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:22px}
+.stat{background:#ffffff17;border:1px solid #ffffff25;border-radius:17px;padding:14px}
+.stat strong{display:block;font-size:23px}.stat span{font-size:12px;opacity:.78}
+.xpbox{background:#fff;color:var(--text);padding:20px;border-radius:22px;position:relative;z-index:2}
+.xpbox .row{display:flex;justify-content:space-between;font-weight:800;margin-bottom:10px}
+.progress{height:11px;background:#e9e0fb;border-radius:99px;overflow:hidden}
+.progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--purple2),#c28cff);border-radius:inherit;transition:width .7s cubic-bezier(.2,.8,.2,1)}
+.layout{display:grid;grid-template-columns:280px 1fr;gap:20px;margin-top:20px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow)}
+.sidebar{padding:18px;align-self:start;position:sticky;top:15px}
+.sidebar h3{margin:3px 5px 15px;font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.level-btn{width:100%;border:0;background:transparent;padding:12px;border-radius:15px;text-align:left;display:flex;gap:12px;align-items:center;color:var(--text);margin:3px 0}
+.level-btn:hover{background:var(--surface2)}
+.level-btn.active{background:#eee5ff;color:var(--purple);font-weight:800}
+.level-btn.locked{opacity:.48;cursor:not-allowed}
+.level-num{width:34px;height:34px;border-radius:11px;background:#eee7ff;display:grid;place-items:center;font-weight:900;color:var(--purple)}
+.level-btn.active .level-num{background:var(--purple);color:#fff}
+.level-meta{margin-left:auto;font-size:11px;color:var(--muted)}
+.content{min-width:0}
+.toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:14px}
+.toolbar h2{margin:0;font-size:25px}.toolbar p{margin:4px 0 0;color:var(--muted);font-size:13px}
+.actions{display:flex;gap:8px}
+.action{border:1px solid var(--line);background:#fff;color:var(--deep);padding:9px 12px;border-radius:12px;font-weight:750}
+.action.primary{background:var(--purple);color:#fff;border-color:var(--purple)}
+.missions{display:grid;gap:10px}
+.mission{background:#fff;border:1px solid var(--line);border-radius:19px;padding:15px;display:grid;grid-template-columns:40px 1fr auto;gap:12px;align-items:center;transition:.25s;position:relative;overflow:hidden}
+.mission:hover{transform:translateY(-2px);box-shadow:0 12px 25px #6d3bd11a}
+.mission.done{background:#fbfaff;border-color:#cdb9f7}
+.check{width:40px;height:40px;border-radius:13px;border:2px solid #d7c9ef;background:#faf8ff;display:grid;place-items:center;color:transparent;font-weight:1000;transition:.25s}
+.mission.done .check{background:#6d3bd1;border-color:#6d3bd1;color:#fff;transform:scale(1.02)}
+.mission h4{margin:0 0 3px;font-size:15px}.mission p{margin:0;color:var(--muted);font-size:12px;line-height:1.4}
+.reward{font-size:12px;font-weight:850;color:#8051d4;background:#f1eaff;padding:7px 9px;border-radius:9px}
+.mission.done .reward{color:#27885f;background:#e6f8ef}
+.section-title{margin:22px 0 10px;font-size:14px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.challenge{background:linear-gradient(135deg,#f1eaff,#fff);border:1px solid #d8c6fa;border-radius:22px;padding:19px;display:flex;justify-content:space-between;gap:20px;align-items:center}
+.challenge h3{margin:0 0 5px}.challenge p{margin:0;color:var(--muted);font-size:13px}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
+.badge{background:#fff;border:1px solid var(--line);padding:8px 10px;border-radius:12px;font-size:12px;font-weight:750}
+.badge.on{border-color:#c4a8f2;background:#f4edff;color:#6933c2}
+.empty{padding:35px;text-align:center;color:var(--muted)}
+.toast{position:fixed;right:22px;bottom:22px;background:#fff;border:1px solid var(--line);border-radius:17px;padding:14px 17px;box-shadow:0 15px 40px #32185d28;transform:translateY(120px);opacity:0;transition:.35s;z-index:20;font-weight:750}
+.toast.show{transform:translateY(0);opacity:1}
+.confetti{position:fixed;pointer-events:none;width:8px;height:14px;border-radius:3px;z-index:30;animation:fall 900ms ease-out forwards}
+@keyframes fall{to{transform:translate(var(--x),var(--y)) rotate(620deg);opacity:0}}
+@keyframes pop{50%{transform:scale(1.08)}}
+.pop{animation:pop .35s ease}
+@media(max-width:850px){.hero-grid{grid-template-columns:1fr}.layout{grid-template-columns:1fr}.sidebar{position:static}.level-btn{display:inline-flex;width:auto;margin-right:4px}.sidebar{overflow:auto;white-space:nowrap}.sidebar h3{display:none}.toolbar{align-items:flex-start}.mission{grid-template-columns:40px 1fr}.reward{grid-column:2}.actions{display:none}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="logo"><div class="logo-mark">♪</div> HARMONIA <span style="font-weight:500;color:var(--muted)">• jornada do violonista</span></div>
+    <div class="pill" id="streak">🔥 0 dias</div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-grid">
+      <div>
+        <div class="level-badge" id="heroBadge">NÍVEL 0 • PRIMEIROS PASSOS</div>
+        <h1>Seu braço do violão<br>vai virar um mapa.</h1>
+        <p>Uma trilha de estudos em que cada conceito aprendido desbloqueia o próximo. Marque o que você realmente estudou — a evolução fica salva neste navegador.</p>
+        <div class="stats">
+          <div class="stat"><strong id="xp">0</strong><span>XP conquistado</span></div>
+          <div class="stat"><strong id="done">0</strong><span>missões concluídas</span></div>
+          <div class="stat"><strong id="percent">0%</strong><span>da jornada</span></div>
+        </div>
+      </div>
+      <div class="xpbox">
+        <div class="row"><span id="xpTitle">Progresso do nível</span><span id="xpLabel">0 / 100 XP</span></div>
+        <div class="progress"><i id="xpBar"></i></div>
+        <p id="nextText" style="font-size:12px;color:var(--muted);line-height:1.4;margin:12px 0 0">Complete as missões para ganhar XP e desbloquear o próximo estágio.</p>
+      </div>
+    </div>
+  </section>
+
+  <main class="layout">
+    <aside class="card sidebar">
+      <h3>Mapa da jornada</h3>
+      <div id="levelNav"></div>
+    </aside>
+    <section class="content">
+      <div class="toolbar">
+        <div><h2 id="levelTitle"></h2><p id="levelDesc"></p></div>
+        <div class="actions"><button class="action" onclick="resetProgress()">↻ Reiniciar</button></div>
+      </div>
+      <div id="missions" class="missions"></div>
+      <div class="section-title">Desafio de passagem</div>
+      <div id="challenge"></div>
+      <div class="section-title">Conquistas</div>
+      <div id="badges" class="badges"></div>
+    </section>
+  </main>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const levels = [
+{n:0,name:"Primeiros passos",desc:"Construir a coordenação, conhecer o instrumento e começar a falar a língua da música.",tasks:[
+["Postura correta","Ajustar posição do corpo, braço e mão sem tensão.",10],["Pressionar as cordas","Praticar pressão limpa e evitar trastejamento.",10],
+["Conhecer as partes do violão","Identificar corpo, braço, trastes, ponte, pestana, tarraxas etc.",10],["Como usar a palheta","Alternância para baixo/cima e ataque confortável.",10],
+["Como dedilhar","Experimentar padrões simples com polegar e dedos.",10],["Como fazer batidas","Manter pulso constante em padrões fáceis.",10],
+["Acordes iniciais","Maiores e menores mais usados: C, D, E, G, A, Am, Em etc.",15],["As 7 notas musicais","Dó–Ré–Mi–Fá–Sol–Lá–Si e sua repetição.",10],
+["Músicas de 2 ou 3 acordes","Tocar músicas simples sem parar o pulso.",15]]},
+{n:1,name:"Fundamentos",desc:"Você começa a entender o que está tocando, além de simplesmente decorar formas.",tasks:[
+["Músicas de 4 ou 5 acordes","Ampliar repertório e trocar acordes com fluidez.",15],["Ritmos fáceis","Balada, rock, pop rock, gospel e variações.",15],
+["Teoria musical básica","Pulso, compasso, tempo, tom, semitom e intervalo.",15],["Notas das cordas soltas","Memorizar E–A–D–G–B–E.",15],
+["Sustenidos e bemóis","Entender #, ♭ e a lógica dos semitons.",15],["Como afinar o violão","Afinar por afinador e compreender a referência.",15]]},
+{n:2,name:"Braço do violão",desc:"A mão esquerda ganha liberdade e o braço deixa de parecer um conjunto de formas aleatórias.",tasks:[
+["Acordes com pestana","Dominar formatos móveis e controlar pressão.",20],["Memorizar notas no braço","Encontrar notas naturais e acidentes com segurança.",20],
+["Solos fáceis","Aplicar pequenas melodias e frases.",15],["Dedilhados simples","Padrões com independência e regularidade.",15],
+["Sequências maiores","Tocar músicas com mais acordes e mudanças.",15],["Como ler cifras","Entender símbolos, acordes, ritmos e estrutura.",15]]},
+{n:3,name:"Harmonia maior",desc:"A teoria começa a explicar por que certas notas e acordes combinam.",tasks:[
+["Ritmos mais complexos","Síncopa, subdivisões e combinações.",15],["Escala maior","Construção: T–T–ST–T–T–T–ST.",20],
+["Campo harmônico maior","I, ii, iii, IV, V, vi, vii°.",20],["Tonalidade","Entender centro tonal, graus e armaduras.",20],
+["Repertório expandido","Aplicar os conceitos em músicas reais.",15]]},
+{n:4,name:"Harmonia e percepção",desc:"Aqui começa a ponte entre teoria, ouvido, improvisação e construção de acordes.",tasks:[
+["Formação de acordes","Entender empilhamento de terças e fórmulas.",15],["Tríades","Maior, menor, diminuta e aumentada.",15],
+["Inversões","Reconhecer e aplicar baixo diferente da fundamental.",15],["Acordes relativos","Relação maior/menor e aplicação musical.",10],
+["Substituição diatônica","Trocar acordes com função equivalente.",15],["Funções harmônicas","Tônica, subdominante e dominante.",15],
+["Tétrades","Maj7, 7, m7, m7(b5) e suas funções.",15],["Intervalos","Reconhecer, construir e cantar intervalos.",15],
+["Solfejo e percepção","Treinar ouvido cantando graus, intervalos e melodias.",15],["Escalas principais","Maior, menor natural, pentatônica maior e menor.",20],
+["Improvisar com backing tracks","Começar a pensar em frases, não só em desenhos.",20]]},
+{n:5,name:"Linguagem do músico",desc:"Você passa a enxergar o braço como um sistema completo e começa a tirar música do ouvido.",tasks:[
+["Tensões","9, 11, 13 e alterações: quando e por que usar.",15],["Dominantes secundários","V/V, V/ii e outras tonicizações.",15],
+["Progressão II–V–I","Construir, ouvir e transportar para outras tonalidades.",20],["Acordes diminutos","Função, passagem e simetria.",15],
+["Modulações","Perceber e criar mudanças de tonalidade.",20],["Articulações","Hammer-on, pull-off, vibrato, bend e slide.",15],
+["Estudo com metrônomo","Subdivisão, precisão, dinâmica e aumento gradual de BPM.",20],["Escalas em todas as tonalidades","Levar desenhos e fórmulas para o braço inteiro.",25],
+["Arpejos em todas as tonalidades","Visualizar acordes através das notas do arpejo.",25],["Tirar melodias de ouvido","Ouvir, encontrar e cantar antes de tocar.",20],["Tirar acordes de ouvido","Identificar baixo, qualidade e movimento harmônico.",25]]},
+{n:6,name:"Modalidade",desc:"O ouvido e a teoria começam a enxergar cores diferentes dentro e fora da tonalidade.",tasks:[
+["Empréstimos modais","Trazer acordes de modos paralelos para a tonalidade.",20],["Tonalidade menor","Escala menor, graus, harmonia e funções.",20],
+["Harmonia modal","Pensar em centros modais e não apenas em dominante–tônica.",20],["Arpejos com tétrades","Conectar arpejos ao acorde real da música.",20],
+["Padrões melódicos","Sequências, deslocamentos e desenvolvimento de ideias.",15],["Modos gregos","Ioniano, dórico, frígio, lídio, mixolídio, eólio e lócrio.",25],
+["Ouvido avançado","Desafiar-se com músicas mais complexas sem cifra.",25]]},
+{n:7,name:"Linguagem avançada",desc:"O nível em que teoria deixa de ser matéria e vira ferramenta de criação.",tasks:[
+["Modos em todas as tonalidades","Relacionar fórmula, acorde, som e região do braço.",25],["Voicings","Construir acordes por conjuntos de notas e condução.",20],
+["Rearmonização","Substituir e enriquecer progressões mantendo a intenção.",25],["Escala de tons inteiros","Explorar simetria e sonoridade aumentada.",20],
+["Escala diminuta","Dominar as estruturas tom–semitom e semitom–tom.",20],["Improvisação por acorde","Escolher linguagem de acordo com cada acorde.",25],
+["Sobreposição de arpejos","Usar arpejos diferentes sobre um mesmo acorde para criar tensões.",25],["Cromatismo","Aproximações, notas de passagem e linhas cromáticas.",20],
+["Voice leading","Mover o mínimo possível entre as vozes dos acordes.",25],["Ritmo avançado","Polirritmia, deslocamento, antecipação e subdivisões.",20],
+["Transcrição completa","Tirar uma música de ouvido: ritmo, melodia, baixo e harmonia.",30],
+["Composição e arranjo","Criar uma peça usando conscientemente os recursos estudados.",30]]}
+];
+
+let state = JSON.parse(localStorage.getItem("harmonia_state") || "null") || {done:{},xp:0,started:null,last:null,days:0};
+let current=0;
+const key=(l,i)=>`${l}-${i}`;
+
+function save(){localStorage.setItem("harmonia_state",JSON.stringify(state));}
+function levelDone(l){return levels[l].tasks.filter((_,i)=>state.done[key(l,i)]).length}
+function levelXP(l){return levels[l].tasks.reduce((s,t,i)=>s+(state.done[key(l,i)]?t[2]:0),0)}
+function levelUnlocked(l){return l===0 || levelDone(l-1)===levels[l-1].tasks.length}
+
+function renderNav(){
+  levelNav.innerHTML=levels.map(l=>{
+    const locked=!levelUnlocked(l.n), pct=Math.round(levelDone(l.n)/l.tasks.length*100);
+    return `<button class="level-btn ${current===l.n?'active':''} ${locked?'locked':''}" ${locked?'disabled':''} onclick="selectLevel(${l.n})">
+      <span class="level-num">${locked?'🔒':l.n}</span><span><b>Nível ${l.n}</b><br><small>${l.name}</small></span><span class="level-meta">${pct}%</span></button>`;
+  }).join("");
+}
+function render(){
+  if(!levelUnlocked(current)) current=0;
+  const l=levels[current], doneCount=levelDone(current), xpL=levelXP(current), totalXP=l.tasks.reduce((s,t)=>s+t[2],0), pct=Math.round(doneCount/l.tasks.length*100);
+  levelTitle.textContent=`Nível ${l.n} — ${l.name}`;
+  levelDesc.textContent=l.desc;
+  heroBadge.textContent=`NÍVEL ${l.n} • ${l.name.toUpperCase()}`;
+  xpTitle.textContent=`Progresso do nível`;
+  xpLabel.textContent=`${xpL} / ${totalXP} XP`;
+  xpBar.style.width=`${Math.min(100,xpL/totalXP*100)}%`;
+  done.textContent=Object.keys(state.done).filter(k=>state.done[k]).length;
+  xp.textContent=state.xp;
+  const all=levels.reduce((s,x)=>s+x.tasks.length,0), allDone=Object.keys(state.done).filter(k=>state.done[k]).length;
+  percent.textContent=Math.round(allDone/all*100)+"%";
+  streak.textContent=`🔥 ${state.days||0} ${state.days===1?'dia':'dias'}`;
+  nextText.textContent = pct===100
+    ? (current<7?`Nível concluído! O próximo estágio está desbloqueado.`:`Você chegou ao topo da trilha — agora é hora de transformar conhecimento em música.`)
+    : `Faltam ${l.tasks.length-doneCount} missão${l.tasks.length-doneCount===1?'':'ões'} para dominar este nível.`;
+  missions.innerHTML=l.tasks.map((t,i)=>`
+    <article class="mission ${state.done[key(current,i)]?'done':''}" id="m${i}">
+      <button class="check" onclick="toggle(${current},${i})">${state.done[key(current,i)]?'✓':''}</button>
+      <div><h4>${t[0]}</h4><p>${t[1]}</p></div>
+      <span class="reward">+${t[2]} XP</span>
+    </article>`).join("");
+  renderChallenge(l,pct); renderBadges(); renderNav();
+}
+function renderChallenge(l,pct){
+  const challenge = pct===100
+    ? `<div class="challenge"><div><h3>🎸 Desafio de passagem</h3><p>Toque algo usando pelo menos 3 coisas que você acabou de aprender. Grave 30 segundos e tente explicar o que fez.</p></div><button class="action primary" onclick="celebrate()">Fazer agora</button></div>`
+    : `<div class="challenge"><div><h3>🎯 Microdesafio de hoje</h3><p>Escolha uma missão acima e estude por 15 minutos sem trocar de assunto. Depois marque como concluída.</p></div><button class="action primary" onclick="focusNext()">Começar</button></div>`;
+  document.getElementById("challenge").innerHTML=challenge;
+}
+function renderBadges(){
+ const total=Object.keys(state.done).filter(k=>state.done[k]).length;
+ const badges=[
+  [total>=1,"🌱","Primeira nota"],[total>=5,"🎵","Pegou o ritmo"],[total>=10,"🎸","Violão acordado"],
+  [total>=20,"🧭","Braço em exploração"],[total>=35,"🧠","Teoria ganhando forma"],[total>=55,"👂","Ouvido trabalhando"],
+  [total>=75,"⚡","Músico em construção"],[total>=levels.reduce((s,l)=>s+l.tasks.length,0),"👑","Mestre da jornada"]
+ ];
+ document.getElementById("badges").innerHTML=badges.map(b=>`<span class="badge ${b[0]?'on':''}">${b[1]} ${b[2]}</span>`).join("");
+}
+function selectLevel(n){if(levelUnlocked(n)){current=n;render()}}
+function toggle(l,i){
+ const k=key(l,i), was=!!state.done[k], t=levels[l].tasks[i];
+ state.done[k]=!was;
+ state.xp=Math.max(0,state.xp+(was?-t[2]:t[2]));
+ if(!state.started)state.started=new Date().toISOString().slice(0,10);
+ const today=new Date().toISOString().slice(0,10);
+ if(state.last!==today){state.days++;state.last=today}
+ save();render();
+ if(!was){document.getElementById("m"+i)?.classList.add("pop"); toast(`+${t[2]} XP — ${t[0]} concluído!`); confetti()}
+ if(levelDone(l)===levels[l].tasks.length && l<7){setTimeout(()=>{toast(`✨ Nível ${l+1} desbloqueado!`); current=l+1;render()},700)}
+}
+function focusNext(){
+ const l=levels[current], i=l.tasks.findIndex((_,i)=>!state.done[key(current,i)]);
+ if(i>=0){document.getElementById("m"+i).scrollIntoView({behavior:"smooth",block:"center"});document.getElementById("m"+i).classList.add("pop");}
+}
+function celebrate(){confetti(32);toast("🎸 Agora transforme teoria em som. Grave seu desafio!")}
+function toast(msg){const el=document.getElementById("toast");el.textContent=msg;el.classList.add("show");clearTimeout(window.tt);window.tt=setTimeout(()=>el.classList.remove("show"),2200)}
+function confetti(n=14){
+ for(let i=0;i<n;i++){let e=document.createElement("i");e.className="confetti";e.style.left=(innerWidth/2+(Math.random()-.5)*120)+"px";e.style.top=(innerHeight/2)+"px";e.style.background=`hsl(${255+Math.random()*55} 70% ${55+Math.random()*20}%)`;e.style.setProperty("--x",(Math.random()-.5)*500+"px");e.style.setProperty("--y",(Math.random()-.8)*500+"px");document.body.appendChild(e);setTimeout(()=>e.remove(),1000)}
+}
+function resetProgress(){
+ if(confirm("Zerar toda a jornada? Isso apaga o progresso salvo neste navegador.")){state={done:{},xp:0,started:null,last:null,days:0};save();current=0;render();toast("Jornada reiniciada.")}
+}
+render();
+</script>
+</body>
+</html>
